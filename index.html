@@ -211,8 +211,7 @@
     .scroll-content {
       animation: scrollUp 34s linear infinite;
     }
-    .scroll-box:hover .scroll-content,
-    .scroll-box:active .scroll-content { animation-play-state: paused; }
+    .scroll-box.paused .scroll-content { animation-play-state: paused; }
     @keyframes scrollUp {
       from { transform: translateY(230px); }
       to { transform: translateY(-100%); }
@@ -286,7 +285,7 @@
       <section class="step w-full" data-step="3">
         
         <div class="cake mb-8">
-          <div class="flame" id="flame"></div>
+          <div class="flame" id="flame" onclick="blowCandle()" style="cursor:pointer"></div>
           <div class="candle"></div>
           <div class="cake-top"></div>
           <div class="cake-base"></div>
@@ -305,7 +304,7 @@
                 On your special day, I just want to say that you are one of the most beautiful blessings in my life. Your smile makes my world softer, your presence makes my heart peaceful, and your love makes every day feel special.
               </p>
               <p class="text-lg leading-8 text-black/95 mt-6">
-                May Allah bless you with endless happiness, health, success, love, and every dream your heart silently prays for. I am so lucky to have you. ❤️
+                May God bless you with endless happiness, health, success, love, and every dream your heart silently prays for. I am so lucky to have you. ❤️
               </p>
               <p class="font-love text-3xl text-pink-700 mt-8 text-center">Happy Birthday My Love 🎂</p>
               <p class="font-love text-2xl text-pink-700 mt-4 text-center">Forever yours ❤️</p>
@@ -328,12 +327,16 @@
   <script>
     let currentStep = 0;
     let score = 0;
+    let stepTimer = null;
+    let giftOpened = false;
+    let candleBlown = false;
     const steps = document.querySelectorAll('.step');
     const catchHeart = document.getElementById('catchHeart');
     const heartGame = document.getElementById('heartGame');
     const scoreEl = document.getElementById('score');
 
     function showStep(index) {
+      clearTimeout(stepTimer);
       steps.forEach(step => step.classList.remove('active'));
       steps[index].classList.add('active');
       currentStep = index;
@@ -377,6 +380,7 @@
     }
 
     catchHeart.addEventListener('click', () => {
+      if (score >= 5) return;
       score++;
       scoreEl.textContent = score;
       catchHeart.classList.add('shake');
@@ -389,16 +393,21 @@
     });
 
     function openGift(box) {
+      if (giftOpened) return;
+      giftOpened = true;
       box.classList.add('open');
       document.getElementById('giftMessage').classList.remove('hidden');
       launchConfetti(50);
-      setTimeout(() => showStep(3), 9000);
+      stepTimer = setTimeout(() => showStep(3), 6000);
     }
 
     function blowCandle() {
+      if (candleBlown) return;
+      candleBlown = true;
+      clearTimeout(stepTimer);
       document.getElementById('flame').style.display = 'none';
       launchConfetti(120);
-      setTimeout(() => showStep(4), 1200);
+      stepTimer = setTimeout(() => showStep(4), 1200);
     }
 
     function launchConfetti(amount = 100) {
@@ -416,6 +425,9 @@
     }
 
     function restartWish() {
+      clearTimeout(stepTimer);
+      giftOpened = false;
+      candleBlown = false;
       score = 0;
       scoreEl.textContent = '0';
       document.getElementById('flame').style.display = 'block';
@@ -423,6 +435,13 @@
       document.querySelector('.gift-box').classList.remove('open');
       showStep(0);
     }
+
+    // Pause the scrolling message only while touched/pressed, resume when released
+    const scrollBox = document.querySelector('.scroll-box');
+    ['pointerdown'].forEach(e => scrollBox.addEventListener(e, () => scrollBox.classList.add('paused')));
+    ['pointerup', 'pointercancel', 'pointerleave', 'touchend', 'touchcancel'].forEach(e =>
+      scrollBox.addEventListener(e, () => scrollBox.classList.remove('paused'))
+    );
 
     createFloatingHearts();
     createSparkles();
