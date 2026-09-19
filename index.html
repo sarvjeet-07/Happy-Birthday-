@@ -200,6 +200,48 @@
       to { transform: translateY(110vh) rotate(720deg); opacity: 0; }
     }
 
+    /* Vertical scrolling message (credits style) */
+    .scroll-box {
+      height: 230px;
+      overflow: hidden;
+      position: relative;
+      -webkit-mask-image: linear-gradient(to bottom, transparent, #000 14%, #000 86%, transparent);
+      mask-image: linear-gradient(to bottom, transparent, #000 14%, #000 86%, transparent);
+    }
+    .scroll-content {
+      animation: scrollUp 34s linear infinite;
+    }
+    .scroll-box:hover .scroll-content,
+    .scroll-box:active .scroll-content { animation-play-state: paused; }
+    @keyframes scrollUp {
+      from { transform: translateY(230px); }
+      to { transform: translateY(-100%); }
+    }
+
+    /* Horizontal scrolling ticker */
+    .marquee {
+      overflow: hidden;
+      white-space: nowrap;
+      margin-top: 1.5rem;
+      border-radius: 9999px;
+      background: rgba(255,255,255,.25);
+      border: 1px solid rgba(255,255,255,.35);
+      padding: .6rem 0;
+    }
+    .marquee-track {
+      display: inline-flex;
+      animation: marquee 22s linear infinite;
+    }
+    .marquee-track span {
+      padding-right: 3rem;
+      font-weight: 600;
+      color: #be185d;
+    }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
     .shake { animation: shake .45s ease; }
     @keyframes shake {
       0%,100% { transform: translateX(0); }
@@ -257,13 +299,27 @@
         <p class="uppercase tracking-[.35em] text-sm text-pink-100 mb-4">Final Message</p>
         <h2 class="font-love text-5xl sm:text-7xl mb-6">Happy Birthday My Love 🎂</h2>
         <div class="max-w-2xl mx-auto text-left bg-white/20 rounded-3xl p-6 border border-white/25">
-          <p class="text-lg leading-8 text-black/95">
-            On your special day, I just want to say that you are one of the most beautiful blessings in my life. Your smile makes my world softer, your presence makes my heart peaceful, and your love makes every day feel special.
-          </p>
-          <p class="text-lg leading-8 text-black/95 mt-4">
-            May Allah bless you with endless happiness, health, success, love, and every dream your heart silently prays for. I am so lucky to have you. ❤️
-          </p>
+          <div class="scroll-box">
+            <div class="scroll-content">
+              <p class="text-lg leading-8 text-black/95">
+                On your special day, I just want to say that you are one of the most beautiful blessings in my life. Your smile makes my world softer, your presence makes my heart peaceful, and your love makes every day feel special.
+              </p>
+              <p class="text-lg leading-8 text-black/95 mt-6">
+                May Allah bless you with endless happiness, health, success, love, and every dream your heart silently prays for. I am so lucky to have you. ❤️
+              </p>
+              <p class="font-love text-3xl text-pink-700 mt-8 text-center">Happy Birthday My Love 🎂</p>
+              <p class="font-love text-2xl text-pink-700 mt-4 text-center">Forever yours ❤️</p>
+            </div>
+          </div>
         </div>
+
+        <div class="marquee">
+          <div class="marquee-track">
+            <span>💖 Happy Birthday My Love</span><span>🎂 You are my greatest blessing</span><span>✨ Forever & always</span><span>❤️ I love you</span>
+            <span>💖 Happy Birthday My Love</span><span>🎂 You are my greatest blessing</span><span>✨ Forever & always</span><span>❤️ I love you</span>
+          </div>
+        </div>
+
         <button onclick="restartWish()" class="mt-8 bg-white text-pink-600 px-8 py-4 rounded-full font-bold shadow-xl hover:scale-105 active:scale-95 transition">Replay Magic ✨</button>
       </section>
     </div>
@@ -336,7 +392,7 @@
       box.classList.add('open');
       document.getElementById('giftMessage').classList.remove('hidden');
       launchConfetti(50);
-      setTimeout(() => showStep(3), 2500);
+      setTimeout(() => showStep(3), 9000);
     }
 
     function blowCandle() {
